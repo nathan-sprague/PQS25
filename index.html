@@ -83,7 +83,8 @@
 
         <br><br>
 
-
+        <input type="button" name="show CAN" value="Show CAN" onclick="document.getElementById('allControls').style.visibility='visible'">
+        <input type="button" name="hide CAN" value="Hide CAN" onclick="document.getElementById('allControls').style.visibility='hidden'">
         <div class="container">
             <div class="box"><h1>Joystick</h1><br>
                 <input type="checkbox" name="joystickConnected" id="joystickConnected" checked><label for="joystickConnected"> Connected</label><br>
@@ -142,7 +143,7 @@
             <div id="rpm2"></div>
             </div>
         </div>
-        <div id="allControls" style="position: absolute; bottom: 1px; width:700px; height:400px;">
+        <div id="allControls" style="position: absolute; bottom: 1px; width:700px; height:400px; visibility: hidden;">
           
 
             <input type="button" name="Run" value="Run" id="run"><br>
