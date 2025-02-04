@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .box {
+            flex: 1; /* Ensures each box has equal width */
+            background-color: lightblue; /* Add color for visibility */
+            border: 1px solid #000; /* Optional border for visual distinction */
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0; /* Make the header sticky at the top */
+            z-index: 1; /* Ensures the header stays on top of other content */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: white;
+        }
+
+    </style>
+
+    </head>
+    
+
+    <body>
+
+        <input type="button" style="position: absolute; bottom:0px; right:0px; width:200px; height: 100px; background-color: yellow; text-align:center; font-size: 36px; align-items: center; display: flex; justify-content: center;" id="showSim" value="Simulations" onclick="document.getElementById('sims').style.visibility='visible'">
+        
+            
+
+        
+       <!--  <script type="importmap">
+          {
+            "imports": {
+              "three": "https://cdn.jsdelivr.net/npm/three@v0.171.0/build/three.module.js",
+              "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+            }
+          }
+        </script> -->
+
+
+
+
+        <script type="module" src="./can_sim.js"></script>
+
+
+
+        <br><br>
+
+
+        <div class="container">
+            <div class="box"><h1>Joystick</h1><br>
+                <input type="checkbox" name="joystickConnected" id="joystickConnected" checked><label for="joystickConnected"> Connected</label><br>
+                <img src="./joystick.png" width="100" height="flex"><br>
+
+                <input type="range" name="xPos" id="xPos"><label for="xPos">X Position</label><br>
+                <input type="range" name="yPos" id="yPos"><label for="yPos">Y Position</label><br>
+                <input type="checkbox" name="grip" id="grip"><label for="grip"> Grip Button</label><br>
+                <input type="checkbox" name="red" id="red"><label for="red"> Red Button</label><br>
+                <input type="checkbox" name="blue" id="blue"><label for="blue"> Blue Button</label><br>
+                <input type="checkbox" name="black" id="black"><label for="black"> Black Button</label><br>
+                <br>
+            <div id="joystick"></div>
+            </div>
+
+            <div class="box"><h1>Raspberry Pi</h1><br>
+                <input type="checkbox" name="piConnected" id="piConnected" checked><label for="piConnected"> Connected</label><br>
+                <img src="./raspberry_pi.png" width="100%" height="flex"><br><br>
+            <div id="pi"></div>
+            </div>
+
+            <div class="box"><h1>Feather</h1><br>
+                <input type="checkbox" name="featherConnected" id="featherConnected" checked><label for="featherConnected"> Connected</label><br>
+                <img src="./feather.png" width="100%" height="flex"><br><br>
+            <div id="feather"></div>
+            </div>
+
+            <div class="box"><h1>Throttle Acuator</h1><br>
+            <input type="checkbox" name="throttleConnected" id="throttleConnected" checked><label for="throttleConnected"> Connected</label><br>
+                <img src="./throttle.jpg" width="100%" height="flex" style="bottom: 10px;"><br><br>
+            <div id="throttle"></div>
+            </div>
+
+            <div class="box"><h1>Steering Actuator</h1><br>
+            <input type="checkbox" name="steerConnected" id="steerConnected" checked><label for="steerConnected"> Connected</label><br>
+                <img src="./steer_actuator.png" width="100%" height="flex"><br><br>
+            <div id="steer"></div>
+            </div>
+
+            <div class="box"><h1>Steering Potentiometer</h1><br>
+                <input type="checkbox" name="potConnected" id="potConnected" checked><label for="potConnected"> Connected</label><br>
+                <img src="./potentiometer.png" width="100%" height="flex"><br><br>
+            <div id="potentiometer"></div>
+            </div>
+
+            <div class="box"><h1>RPM 1</h1><br>
+            <input type="checkbox" name="rpm1Connected" id="rpm1Connected" checked><label for="rpm1Connected"> Connected</label><br>
+                <img src="./rpm_sensor.jpg" width="100%" height="flex"><br><br>
+            <div id="rpm1"></div>
+            </div>
+            
+
+            <div class="box"><h1>RPM 2</h1><br>
+            <input type="checkbox" name="rpm2Connected" id="rpm2Connected" checked><label for="rpm2Connected"> Connected</label><br>
+                <img src="./rpm_sensor.jpg" width="100%" height="flex"><br><br>
+            <div id="rpm2"></div>
+            </div>
+        </div>
+        <div id="allControls" style="position: absolute; bottom: 1px; width:700px; height:400px;">
+          
+
+            <input type="button" name="Run" value="Run" id="run"><br>
+            <input type="checkbox" name="hex" id="hex" checked>
+            <label for="hex">Hexidecimal</label><br>
+            <label for="filter">Filter ID</label>
+            <input type="text" name="filter" id="filter">
+
+
+            
+
+
+            <div id="blah" style="height:300px; overflow:auto; border: 1px solid #ddd;">
+                
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Message ID</th>
+                            <th>Byte 1</th>
+                            <th>Byte 2</th>
+                            <th>Byte 3</th>
+                            <th>Byte 4</th>
+                            <th>Byte 5</th>
+                            <th>Byte 6</th>
+                            <th>Byte 7</th>
+                            <th>Byte 8</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="sims" style="position: absolute; bottom:0px; right:0px; width:800px; height: 200px; background-color: black; text-align:center; font-size: 36px; align-items: center; display: flex; justify-content: center; visibility: hidden;">
+            <div class="box" style="height: 200px;">Pull<br><img src="./pulling.png" width="100%" height="flex" onclick = "location.href='./event_sim.html?event=pull';"><br><br>
+</div>
+            <div class="box" style="height: 200px;">Durability<img src="./durability.png" width="100%" height="flex" onclick = "location.href='./event_sim.html?event=durability';"><br><br></div>
+            <div class="box" style="height: 200px;" onclick = "location.href='./event_sim.html?event=maneuver';">Maneueverability<br><img src="./maneuverability.png" width="100%" height="flex"><br></div>
+            <input type="button" value="done" style="width:100px; height:100px; font-size: 36px; background-color: yellow;" onclick="document.getElementById('sims').style.visibility='hidden'">
+        </div>
+
+
+        
+
+    </body>
+
+</html>
+
+

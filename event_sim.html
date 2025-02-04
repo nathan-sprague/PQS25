@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0; /* Make the header sticky at the top */
+            z-index: 1; /* Ensures the header stays on top of other content */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: white;
+        }
+
+    </style>
+
+    </head>
+    
+
+    <body>
+
+        
+
+        <!-- <div id="crosshair1"></div>
+        <div id="crosshair2"></div> -->
+       <!--  <script type="importmap">
+          {
+            "imports": {
+              "three": "https://cdn.jsdelivr.net/npm/three@v0.171.0/build/three.module.js",
+              "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+            }
+          }
+        </script> -->
+
+        <script type="module" src="./pull_sim.js"></script>
+
+
+        <div id="instructions" style="position:absolute; width: 300px; background-color: yellow; border: 1px solid #000;" onclick="document.getElementById('instructions').style.visibility='hidden';">
+            <h1>Controls</h1>
+            Clutch pedal: <b>C</b><br>
+            Brake pedal: <b>E</b><br>
+            Steer: <b>A</b> and <b>D</b><br>
+            Throttle Up: <b>W</b> (need grip)<br>
+            Grip: <b>Space</b><br>
+            Gears: <b>1</b>-first <b>2</b>-second <b>3</b>-third "<b>`</b>"-reverse    <br>
+            Pause: <b>Escape</b><br><br>
+            Click to hide this box
+            <br>
+        </div>
+
+        <input type="button" id="downloadCan" value="Download CAN Logs" style="position: absolute; right: 0; width: 300px; height: 100px; text-align: center; font-size: 24px; background-color: green; visibility: hidden;">
+
+
+    </body>
+</html>
+
+
