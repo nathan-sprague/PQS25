@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // import { ConvexHull } from 'three/examples/jsm/math/ConvexHull.js';
-import { ConvexHull } from 'three/addons/math/ConvexHull.js';
+// import { ConvexHull } from 'three/addons/math/ConvexHull.js';
+import { ConvexHull } from "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/math/ConvexHull.js";
 
 
 
