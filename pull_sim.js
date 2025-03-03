@@ -971,7 +971,7 @@ function animate() {
                                     Math.sin(-tractorRotation)*-0.25  + Math.cos(tractorRotation)*0.3]
 
 
-            const bumpAmt = 0.01
+            const bumpAmt = speedForward;
             for (const p of durabilityOutlines){
                 if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x + frontLeftWheelPos[0], tractorModel.position.z + frontLeftWheelPos[1]), p)){
                     tractorFloorLevel[0] += bumpAmt*2;
