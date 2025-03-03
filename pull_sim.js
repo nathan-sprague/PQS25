@@ -40,6 +40,10 @@ const globeSize = 100;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(size[0], size[1]);
 document.body.appendChild(renderer.domElement);
+renderer.domElement.style.position = "absolute";
+renderer.domElement.style.top = "0px";
+renderer.domElement.style.left = "0px";
+renderer.domElement.style.zIndex = "1";
 
 const scene = new THREE.Scene(); {
     const ambientLight = new THREE.AmbientLight(0x808080); // Soft ambient light
@@ -93,6 +97,7 @@ const partOffsets = {"leftFrontWheel": new THREE.Vector3(1.67, 0.42, -0.38), "ri
                     "joystick": new THREE.Vector3(-0.05,1.2,0.34)};
                     // (0.03,-0.3,1.2)
 
+const tractorFloorLevel = [0, 0, 0, 0]; // left front, right front, left rear, right rear
 let tractorRotation = 0;
 const tractorPosition = new THREE.Vector3(0,0,0);
 let steerPos = 50; // 0 to 100
@@ -511,6 +516,7 @@ function loadModel(){
     }, undefined, function (error) {
         console.error(error);
     });
+
 }
 
 
@@ -729,10 +735,10 @@ function createWordTexture(val, size = 128) {
 
 function animate() {
     if (document.pointerLockElement !== document.body && !(loadedParts==4 && animationIteration==0)) {
-        document.getElementById("downloadCan").style.visibility = "visible";
+        // document.getElementById("downloadCan").style.visibility = "visible";
         return;
     } else {
-        document.getElementById("downloadCan").style.visibility = "hidden";
+        // document.getElementById("downloadCan").style.visibility = "hidden";
     }
 
     if (tractorModel.children.length == 0 && loadedParts==4){// && tractorParts["rearWheels"]!=undefined){
@@ -856,8 +862,8 @@ function animate() {
         tractorModel.rotation.y = tractorRotation;
         footprint.rotation.y = tractorRotation;
         if (trailer != undefined){
-            
-            trailerRot += -0.01*((trailerRot - tractorModel.rotation.y + Math.PI) % (2 * Math.PI) - Math.PI);
+            console.log(speedForward)
+            trailerRot += -0.01*((trailerRot - tractorModel.rotation.y + Math.PI) % (2 * Math.PI) - Math.PI) * speedForward * 100;
             trailer.rotation.y = trailerRot -tractorRotation;
         }
         tractorModel.position.x += speedForward*Math.cos(-tractorRotation);
@@ -867,11 +873,12 @@ function animate() {
 
         let rotX = rotationX
         if (eventType == "durability"){
-            if (tractorModel.position.x > -10 && tractorModel.position.x < 20 && Math.abs(tractorModel.position.z+11.5) < 2 ){
-                // console.log(animationIteration*speedForward*5)
-                tractorModel.rotation.z = Math.sin(animationIteration*speedForward*4)*0.05
-                rotX += Math.sin(animationIteration*speedForward*4)*0.05
-            }
+
+            // if (tractorModel.position.x > -10 && tractorModel.position.x < 20 && Math.abs(tractorModel.position.z+11.5) < 2 ){
+            //     // console.log(animationIteration*speedForward*5)
+            //     tractorModel.rotation.z = Math.sin(animationIteration*speedForward*4)*0.05
+            //     rotX += Math.sin(animationIteration*speedForward*4)*0.05
+            // }
         }
 
 
@@ -950,18 +957,43 @@ function animate() {
             tractorRPM = 0;
         }
 
+        if (eventType == "durability") {
 
-        // for (const p of durabilityOutlines){
-        //     if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x, tractorModel.position.z), p)){
-        //         console.log("hit")
-        //     }
-        // }
+            const frontLeftWheelPos = [Math.cos(-tractorRotation)*partOffsets["leftFrontWheel"].x + Math.sin(tractorRotation)*partOffsets["leftFrontWheel"].z,
+                                    Math.sin(-tractorRotation)*partOffsets["leftFrontWheel"].x  + Math.cos(tractorRotation)*partOffsets["leftFrontWheel"].z]
+            const frontRightWheelPos = [Math.cos(-tractorRotation)*partOffsets["rightFrontWheel"].x + Math.sin(tractorRotation)*partOffsets["rightFrontWheel"].z,
+                                    Math.sin(-tractorRotation)*partOffsets["rightFrontWheel"].x  + Math.cos(tractorRotation)*partOffsets["rightFrontWheel"].z]
+            
+            const rearLeftWheelPos = [Math.cos(-tractorRotation)*-0.25 + Math.sin(tractorRotation)*-0.3,
+                                    Math.sin(-tractorRotation)*-0.25  + Math.cos(tractorRotation)*-0.3]
 
-        // model.children[0].children.forEach(child => {
-        //     if (child.isMesh) {
-        //         child.geometry.translate(0.25,0,0.41)
-        //     }
-        // });
+            const rearRightWheelPos = [Math.cos(-tractorRotation)*-0.25 + Math.sin(tractorRotation)*0.3,
+                                    Math.sin(-tractorRotation)*-0.25  + Math.cos(tractorRotation)*0.3]
+
+
+            const bumpAmt = 0.01
+            for (const p of durabilityOutlines){
+                if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x + frontLeftWheelPos[0], tractorModel.position.z + frontLeftWheelPos[1]), p)){
+                    tractorFloorLevel[0] += bumpAmt*2;
+                } if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x + frontRightWheelPos[0], tractorModel.position.z + frontRightWheelPos[1]), p)){
+                    tractorFloorLevel[1] += bumpAmt*2;
+                } if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x + rearLeftWheelPos[0], tractorModel.position.z + rearLeftWheelPos[1]), p)){
+                    tractorFloorLevel[2] += bumpAmt*2;
+                } if (isPointInPolygon(new THREE.Vector2(tractorModel.position.x + rearRightWheelPos[0], tractorModel.position.z + rearRightWheelPos[1]), p)){
+                    tractorFloorLevel[3] += bumpAmt*2;
+                }
+            }
+            for (let i=0; i<4; i++){
+                tractorFloorLevel[i] = Math.max(0, tractorFloorLevel[i]-bumpAmt);
+            }
+            const W = 0.6;
+            const L = 1.67;
+            const roll = Math.atan2((tractorFloorLevel[1] + tractorFloorLevel[3]) - (tractorFloorLevel[0] + tractorFloorLevel[2]), W);
+            const pitch = Math.atan2((tractorFloorLevel[0] + tractorFloorLevel[1]) - (tractorFloorLevel[2] + tractorFloorLevel[3]), L);
+            // console.log(roll, pitch, tractorFloorLevel);
+            tractorModel.rotation.x = -roll/2;
+            tractorModel.rotation.z = pitch/2;
+        }
 
 
     }
@@ -984,7 +1016,7 @@ function animate() {
     }
 
     if (animationIteration % 5 == 0){
-        bus.update();
+        // bus.update();
     }
 
     // if (loadedParts == 4){
@@ -1150,13 +1182,17 @@ function makeEnvironment(){
             const cube = new THREE.Mesh(geometry, material);
             scene.add(cube);
             // cube.rotation.y = (Math.random()-0.5)*1.4
+            cube.position.set(i, 0.05, -11.5+Math.random()*1.4)
             g.add(cube);
-            g.position.set(i, 0.05, -11.5+Math.random()*1.4)
 
             scene.add(g)
             // console.log(getOutline(cube))
-
-            // durabilityOutlines.push(getOutline(cube));
+            const outline = getOutline(cube)
+            for (const o of outline){
+                o.x += cube.position.x;
+                o.y += cube.position.z;
+            }
+            durabilityOutlines.push(outline);
 
         }
         // console.log(durabilityOutlines)
